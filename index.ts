@@ -1,25 +1,10 @@
-import express, { Application, Request, Response } from "express";
+//Imports
+import Server from './models/server';
 
-const app: Application = express();
-const port = 8084;
+//Configuraciones
+import dotenv from 'dotenv';
+dotenv.config();
 
-// Body parsing Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.get(
-    "/",
-    async (req: Request, res: Response): Promise<Response> => {
-        return res.status(200).send({
-            message: "Hello World!",
-        });
-    }
-);
-
-try {
-    app.listen(port, (): void => {
-        console.log(`Connected successfully on port ${port}`);
-    });
-} catch (error) {
-    console.error(`Error occured: ${error.message}`);
-}
+// Start server
+const server = new Server();
+server.listen();

@@ -40,23 +40,55 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var app = express_1.default();
-var port = 3000;
-// Body parsing Middleware
-app.use(express_1.default.json());
-app.use(express_1.default.urlencoded({ extended: true }));
-app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/, res.status(200).send({
-                message: "Hello World!",
-            })];
-    });
-}); });
-try {
-    app.listen(port, function () {
-        console.log("Connected successfully on port " + port);
-    });
-}
-catch (error) {
-    console.error("Error occured: " + error.message);
-}
+// import userRoutes from "../routes/usuario";
+var cors_1 = __importDefault(require("cors"));
+var connection_1 = __importDefault(require("../database/connection"));
+var Server = /** @class */ (function () {
+    // private paths = {
+    //   usuarios: "/api/usuarios",
+    // };
+    function Server() {
+        this.app = express_1.default();
+        this.port = process.env.PORT || "5001";
+        this.dbConnection();
+        this.middlewares();
+        // this.routes();
+    }
+    Server.prototype.dbConnection = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, connection_1.default.authenticate()];
+                    case 1:
+                        _a.sent();
+                        console.log("DB connected");
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_1 = _a.sent();
+                        throw new Error(error_1);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Server.prototype.middlewares = function () {
+        this.app.use(cors_1.default()); // config default del cors
+        this.app.use(express_1.default.json()); // me parse el body en json
+        this.app.use(express_1.default.static("public")); //carpeta publica
+    };
+    // routes() {
+    //   this.app.use(this.paths.usuarios, userRoutes);
+    // }
+    Server.prototype.listen = function () {
+        var _this = this;
+        this.app.listen(this.port, function () {
+            console.log("Servidor corriendo en " + _this.port);
+        });
+    };
+    return Server;
+}());
+exports.default = Server;
+//# sourceMappingURL=server.js.map
