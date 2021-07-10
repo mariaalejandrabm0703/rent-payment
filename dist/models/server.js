@@ -40,7 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var pagosRoutes_1 = __importDefault(require("../routes/pagosRoutes"));
+var pagos_1 = __importDefault(require("../routes/pagos"));
 var cors_1 = __importDefault(require("cors"));
 var connection_1 = __importDefault(require("../database/connection"));
 var Server = /** @class */ (function () {
@@ -80,7 +80,7 @@ var Server = /** @class */ (function () {
         this.app.use(express_1.default.static("public")); //carpeta publica
     };
     Server.prototype.routes = function () {
-        this.app.use(this.paths.pagos, pagosRoutes_1.default);
+        this.app.use(this.paths.pagos, pagos_1.default);
     };
     Server.prototype.listen = function () {
         var _this = this;

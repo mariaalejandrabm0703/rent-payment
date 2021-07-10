@@ -1,5 +1,5 @@
 import express, { Application } from "express";
-import pagosRoutes from "../routes/pagosRoutes";
+import pagosRoutes from "../routes/pagos";
 import cors from "cors";
 import db from "../database/connection";
 

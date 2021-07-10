@@ -45,39 +45,46 @@ var getPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     var pagos;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, pagos_1.default.findAll()];
+            case 0: return [4 /*yield*/, pagos_1.default.findAll({
+                    attributes: [
+                        "documentoIdentificacionArrendatario",
+                        "codigoInmueble",
+                        "valorPagado",
+                        "fechaPago",
+                    ],
+                })];
             case 1:
                 pagos = _a.sent();
-                res.json({ pagos: pagos });
+                res.json(pagos);
                 return [2 /*return*/];
         }
     });
 }); };
 exports.getPagos = getPagos;
 var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var body, pago, error_1;
+    var body, str, date, pago;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                body = req.body;
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 3, , 4]);
-                pago = pagos_1.default.build(body);
-                return [4 /*yield*/, pago.save()];
-            case 2:
-                _a.sent();
-                res.json(pago);
-                return [3 /*break*/, 4];
-            case 3:
-                error_1 = _a.sent();
-                console.log(error_1);
-                res.status(500).json({
-                    msg: "Ha ocurrido un error, comuniquese con el administrador del sistema.",
-                });
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+        body = req.body;
+        str = body.fechaPago.split("/");
+        date = new Date(str[2] + "/" + str[1] + "/" + str[0]);
+        pago = {
+            documentoIdentificacionArrendatario: req.body.documentoIdentificacionArrendatario,
+            codigoInmueble: body.codigoInmueble,
+            valorPagado: body.valorPagado,
+            fechaPago: date,
+        };
+        try {
+            pagos_1.default.create(pago).then(function (pago) {
+                res.json({ respuesta: pago });
+            });
         }
+        catch (error) {
+            console.log(error);
+            res.status(500).json({
+                msg: error.errors[0].message,
+            });
+        }
+        return [2 /*return*/];
     });
 }); };
 exports.postPagos = postPagos;
