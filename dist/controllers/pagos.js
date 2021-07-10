@@ -39,55 +39,46 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-// import userRoutes from "../routes/usuario";
-var cors_1 = __importDefault(require("cors"));
-var connection_1 = __importDefault(require("../database/connection"));
-var Server = /** @class */ (function () {
-    // private paths = {
-    //   usuarios: "/api/usuarios",
-    // };
-    function Server() {
-        this.app = express_1.default();
-        this.port = process.env.PORT || "5001";
-        this.dbConnection();
-        this.middlewares();
-        // this.routes();
-    }
-    Server.prototype.dbConnection = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, connection_1.default.authenticate()];
-                    case 1:
-                        _a.sent();
-                        console.log("DB connected");
-                        return [3 /*break*/, 3];
-                    case 2:
-                        error_1 = _a.sent();
-                        throw new Error(error_1);
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Server.prototype.middlewares = function () {
-        this.app.use(cors_1.default()); // config default del cors
-        this.app.use(express_1.default.json()); // me parse el body en json
-        this.app.use(express_1.default.static("public")); //carpeta publica
-    };
-    // routes() {
-    //   this.app.use(this.paths.usuarios, userRoutes);
-    // }
-    Server.prototype.listen = function () {
-        var _this = this;
-        this.app.listen(this.port, function () {
-            console.log("Servidor corriendo en " + _this.port);
-        });
-    };
-    return Server;
-}());
-exports.default = Server;
+exports.postPagos = exports.getPagos = void 0;
+var pagos_1 = __importDefault(require("../models/pagos"));
+var getPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var pagos;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, pagos_1.default.findAll()];
+            case 1:
+                pagos = _a.sent();
+                res.json({ pagos: pagos });
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getPagos = getPagos;
+var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var body, pago, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                body = req.body;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                pago = pagos_1.default.build(body);
+                return [4 /*yield*/, pago.save()];
+            case 2:
+                _a.sent();
+                res.json(pago);
+                return [3 /*break*/, 4];
+            case 3:
+                error_1 = _a.sent();
+                console.log(error_1);
+                res.status(500).json({
+                    msg: "Ha ocurrido un error, comuniquese con el administrador del sistema.",
+                });
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+exports.postPagos = postPagos;
+//# sourceMappingURL=pagos.js.map

@@ -1,5 +1,5 @@
 import express, { Application } from "express";
-// import userRoutes from "../routes/usuario";
+import pagosRoutes from "../routes/pagosRoutes";
 import cors from "cors";
 import db from "../database/connection";
 
@@ -7,21 +7,21 @@ class Server {
 
   private app: Application;
   private port: string;
-  // private paths = {
-  //   usuarios: "/api/usuarios",
-  // };
+  private paths = {
+    pagos: "/api/pagos",
+  };
 
   constructor() {
     this.app = express();
-    this.port = process.env.PORT || "5001";
+    this.port = process.env.PORT || "8084";
     this.dbConnection();
     this.middlewares();
-    // this.routes();
+    this.routes();
   }
   async dbConnection() {
     try {
       await db.authenticate();
-      console.log("DB connected");
+      console.log("DB connected", db.getDialect(),db.getDatabaseName());
     } catch (error) {
       throw new Error(error);
     }
@@ -31,9 +31,9 @@ class Server {
     this.app.use(express.json()); // me parse el body en json
     this.app.use(express.static("public")); //carpeta publica
   }
-  // routes() {
-  //   this.app.use(this.paths.usuarios, userRoutes);
-  // }
+  routes() {
+    this.app.use(this.paths.pagos, pagosRoutes);
+  }
 
   listen() {
     this.app.listen(this.port, () => {

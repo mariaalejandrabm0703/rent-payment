@@ -40,19 +40,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-// import userRoutes from "../routes/usuario";
+var pagosRoutes_1 = __importDefault(require("../routes/pagosRoutes"));
 var cors_1 = __importDefault(require("cors"));
 var connection_1 = __importDefault(require("../database/connection"));
 var Server = /** @class */ (function () {
-    // private paths = {
-    //   usuarios: "/api/usuarios",
-    // };
     function Server() {
+        this.paths = {
+            pagos: "/api/pagos",
+        };
         this.app = express_1.default();
-        this.port = process.env.PORT || "5001";
+        this.port = process.env.PORT || "8084";
         this.dbConnection();
         this.middlewares();
-        // this.routes();
+        this.routes();
     }
     Server.prototype.dbConnection = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -64,7 +64,7 @@ var Server = /** @class */ (function () {
                         return [4 /*yield*/, connection_1.default.authenticate()];
                     case 1:
                         _a.sent();
-                        console.log("DB connected");
+                        console.log("DB connected", connection_1.default.getDialect(), connection_1.default.getDatabaseName());
                         return [3 /*break*/, 3];
                     case 2:
                         error_1 = _a.sent();
@@ -79,9 +79,9 @@ var Server = /** @class */ (function () {
         this.app.use(express_1.default.json()); // me parse el body en json
         this.app.use(express_1.default.static("public")); //carpeta publica
     };
-    // routes() {
-    //   this.app.use(this.paths.usuarios, userRoutes);
-    // }
+    Server.prototype.routes = function () {
+        this.app.use(this.paths.pagos, pagosRoutes_1.default);
+    };
     Server.prototype.listen = function () {
         var _this = this;
         this.app.listen(this.port, function () {
