@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import moment from "moment";
 import Pago from "../models/pagos";
+import validateFormatDate from "../services/validateFormatDate";
 
 export const getPagos = async (req: Request, res: Response) => {
   const pagos = await Pago.findAll({
@@ -15,23 +16,28 @@ export const getPagos = async (req: Request, res: Response) => {
 };
 
 export const postPagos = async (req: Request, res: Response) => {
-  const { body } = req;
-
-  let str = body.fechaPago.split("/");
-  let date = new Date(str[2] + "/" + str[1] + "/" + str[0]);
-
-  let pago = {
-    documentoIdentificacionArrendatario:
-      req.body.documentoIdentificacionArrendatario,
-    codigoInmueble: body.codigoInmueble,
-    valorPagado: body.valorPagado,
-    fechaPago: date,
-  };
-
   try {
+    const { body } = req;
+
+    let fechaPago = validateFormatDate(body.fechaPago);
+    if (!fechaPago) {
+      return res.status(400).json({
+        msg: "Formato de fecha incorrecto",
+      });
+    }
+
+    let pago = {
+      documentoIdentificacionArrendatario:
+        req.body.documentoIdentificacionArrendatario,
+      codigoInmueble: body.codigoInmueble,
+      valorPagado: body.valorPagado,
+      fechaPago: fechaPago,
+    };
+
     Pago.create(pago).then((pago) => {
-      res.json({respuesta:pago});
+      res.json({ respuesta: pago });
     });
+    
   } catch (error) {
     console.log(error);
     res.status(500).json({

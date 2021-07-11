@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postPagos = exports.getPagos = void 0;
 var pagos_1 = __importDefault(require("../models/pagos"));
+var validateFormatDate_1 = __importDefault(require("../services/validateFormatDate"));
 var getPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var pagos;
     return __generator(this, function (_a) {
@@ -62,18 +63,22 @@ var getPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
 }); };
 exports.getPagos = getPagos;
 var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var body, str, date, pago;
+    var body, fechaPago, pago;
     return __generator(this, function (_a) {
-        body = req.body;
-        str = body.fechaPago.split("/");
-        date = new Date(str[2] + "/" + str[1] + "/" + str[0]);
-        pago = {
-            documentoIdentificacionArrendatario: req.body.documentoIdentificacionArrendatario,
-            codigoInmueble: body.codigoInmueble,
-            valorPagado: body.valorPagado,
-            fechaPago: date,
-        };
         try {
+            body = req.body;
+            fechaPago = validateFormatDate_1.default(body.fechaPago);
+            if (!fechaPago) {
+                return [2 /*return*/, res.status(400).json({
+                        msg: "Formato de fecha incorrecto",
+                    })];
+            }
+            pago = {
+                documentoIdentificacionArrendatario: req.body.documentoIdentificacionArrendatario,
+                codigoInmueble: body.codigoInmueble,
+                valorPagado: body.valorPagado,
+                fechaPago: fechaPago,
+            };
             pagos_1.default.create(pago).then(function (pago) {
                 res.json({ respuesta: pago });
             });
