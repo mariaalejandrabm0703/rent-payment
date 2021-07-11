@@ -22,7 +22,7 @@ export const postPagos = async (req: Request, res: Response) => {
     let fechaPago = validateFormatDate(body.fechaPago);
     if (!fechaPago) {
       return res.status(400).json({
-        msg: "Formato de fecha incorrecto",
+        msg: "Formato de fecha incorrecto.",
       });
     }
 
@@ -36,10 +36,11 @@ export const postPagos = async (req: Request, res: Response) => {
 
     Pago.create(pago).then((pago) => {
       res.json({ respuesta: pago });
-    });
-    
+    }).catch(err => res.status(500).json({
+      msg: err.errors[0].message,
+    }))
+
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       msg: error.errors[0].message,
     });

@@ -10,6 +10,9 @@ const Pago = db.define("Pago", {
       notNull: {
         msg: "El campo [documentoIdentificacionArrendatario] no puede ser nulo.",
       },
+      isNumeric: {
+        msg:'El campo [documentoIdentificacionArrendatario] debe ser un número.'
+      }
     },
   },
   codigoInmueble: {
@@ -18,7 +21,10 @@ const Pago = db.define("Pago", {
     validate: {
       notNull: {
         msg: "El campo [codigoInmueble] no puede ser nulo.",
-      },
+      }, 
+      isAlphanumeric:{
+        msg:'El campo [codigoInmueble] debe ser un número.'
+      }
     },
   },
   valorPagado: {
@@ -27,6 +33,14 @@ const Pago = db.define("Pago", {
     validate: {
       notNull: {
         msg: "El campo [valorPagado] no puede ser nulo.",
+      },
+      min: {
+        args:[1],
+        msg:'El campo [valorPagado] debe tener mínimo valor 1.'
+      },
+      max:{
+        args:[1000000],
+        msg:'El campo [valorPagado] debe tener máximo valor 1.000.000.'
       },
     },
   },
@@ -40,7 +54,6 @@ const Pago = db.define("Pago", {
     },
     get: function() {
         let time = this.getDataValue('fechaPago')
-
         if (moment(time, moment.ISO_8601, true).isValid()) {
             return moment(this.getDataValue('fechaPago')).format('DD/MM/YYYY')
         } else {

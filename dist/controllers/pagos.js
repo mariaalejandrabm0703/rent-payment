@@ -70,7 +70,7 @@ var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, f
             fechaPago = validateFormatDate_1.default(body.fechaPago);
             if (!fechaPago) {
                 return [2 /*return*/, res.status(400).json({
-                        msg: "Formato de fecha incorrecto",
+                        msg: "Formato de fecha incorrecto.",
                     })];
             }
             pago = {
@@ -81,10 +81,11 @@ var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, f
             };
             pagos_1.default.create(pago).then(function (pago) {
                 res.json({ respuesta: pago });
-            });
+            }).catch(function (err) { return res.status(500).json({
+                msg: err.errors[0].message,
+            }); });
         }
         catch (error) {
-            console.log(error);
             res.status(500).json({
                 msg: error.errors[0].message,
             });

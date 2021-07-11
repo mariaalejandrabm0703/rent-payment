@@ -14,6 +14,9 @@ var Pago = connection_1.default.define("Pago", {
             notNull: {
                 msg: "El campo [documentoIdentificacionArrendatario] no puede ser nulo.",
             },
+            isNumeric: {
+                msg: 'El campo [documentoIdentificacionArrendatario] debe ser un número.'
+            }
         },
     },
     codigoInmueble: {
@@ -23,6 +26,9 @@ var Pago = connection_1.default.define("Pago", {
             notNull: {
                 msg: "El campo [codigoInmueble] no puede ser nulo.",
             },
+            isAlphanumeric: {
+                msg: 'El campo [codigoInmueble] debe ser un número.'
+            }
         },
     },
     valorPagado: {
@@ -31,6 +37,14 @@ var Pago = connection_1.default.define("Pago", {
         validate: {
             notNull: {
                 msg: "El campo [valorPagado] no puede ser nulo.",
+            },
+            min: {
+                args: [1],
+                msg: 'El campo [valorPagado] debe tener mínimo valor 1.'
+            },
+            max: {
+                args: [1000000],
+                msg: 'El campo [valorPagado] debe tener máximo valor 1.000.000.'
             },
         },
     },
