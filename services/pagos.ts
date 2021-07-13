@@ -1,4 +1,5 @@
 import moment from "moment";
+import Pago from "../models/pagos";
 
 export function validateFormatDate(fechaPago: string) {
   
