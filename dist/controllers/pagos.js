@@ -41,7 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postPagos = exports.getPagos = void 0;
 var pagos_1 = __importDefault(require("../models/pagos"));
-var validateFormatDate_1 = __importDefault(require("../services/validateFormatDate"));
+var pagos_2 = require("../services/pagos");
 var getPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var pagos;
     return __generator(this, function (_a) {
@@ -56,18 +56,18 @@ var getPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                 })];
             case 1:
                 pagos = _a.sent();
-                res.json(pagos);
+                res.status(200).json(pagos);
                 return [2 /*return*/];
         }
     });
 }); };
 exports.getPagos = getPagos;
 var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var body, fechaPago, pago;
+    var body, fechaPago, pago, resp;
     return __generator(this, function (_a) {
         try {
             body = req.body;
-            fechaPago = validateFormatDate_1.default(body.fechaPago);
+            fechaPago = pagos_2.validateFormatDate(body.fechaPago);
             if (!fechaPago) {
                 return [2 /*return*/, res.status(400).json({
                         msg: "Formato de fecha incorrecto.",
@@ -79,6 +79,7 @@ var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, f
                 valorPagado: body.valorPagado,
                 fechaPago: fechaPago,
             };
+            resp = pagos_2.postPago(pago);
             pagos_1.default.create(pago).then(function (pago) {
                 res.json({ respuesta: pago });
             }).catch(function (err) { return res.status(500).json({

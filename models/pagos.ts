@@ -1,5 +1,5 @@
 import moment from "moment";
-import { DataTypes } from "sequelize";
+import { DataTypes, QueryTypes, Sequelize } from "sequelize";
 import db from "../database/connection";
 
 const Pago = db.define("Pago", {
@@ -61,6 +61,10 @@ const Pago = db.define("Pago", {
         }
     }
   },
+});
+
+Pago.sync().then(() => {
+  console.log('table Pago update');
 });
 
 export default Pago;

@@ -67,5 +67,8 @@ var Pago = connection_1.default.define("Pago", {
         }
     },
 });
+Pago.sync().then(function () {
+    console.log('table Pago update');
+});
 exports.default = Pago;
 //# sourceMappingURL=pagos.js.map
