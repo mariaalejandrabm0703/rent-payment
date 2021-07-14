@@ -1,40 +1,114 @@
 import moment from "moment";
-import Pago from "../models/pagos";
+import { Pago, IPay } from "../models/pagos";
 
 export function validateFormatDate(fechaPago: string) {
-  
   let newDate;
-  let dateFormat = 'DD-MM-YYYY';
+  let dateFormat = "DD-MM-YYYY";
   if (fechaPago.includes("/")) {
     newDate = fechaPago.split("/");
     if (
       newDate.length === 3 &&
-      newDate[2].length ===4 &&
-      newDate[1].length ===2 &&
-      newDate[0].length ===2       
+      newDate[2].length === 4 &&
+      newDate[1].length === 2 &&
+      newDate[0].length === 2
     ) {
       newDate = new Date(newDate[2] + "/" + newDate[1] + "/" + newDate[0]);
-      return moment(moment(newDate).format(dateFormat),dateFormat,true).isValid() ? newDate: false
+      return moment(
+        moment(newDate).format(dateFormat),
+        dateFormat,
+        true
+      ).isValid()
+        ? newDate
+        : false;
     }
   }
   return false;
 }
 
-interface iPago{
-    documentoIdentificacionArrendatario: number,
-    codigoInmueble: string,
-    valorPagado: number,
-    fechaPago: Date
-}
+export async function createPago(pago: IPay) {
+  let mesg: string = "";
 
-export function postPago(pago:iPago){
-    console.log('postPago',pago)
-//buscar por documento, mueble y mes/año el pago
-  //validar si pago o no 1.000.000 completos
-  // no pago = registrar pago y devolver cuanto le falta si es necesario.
-  // si pago = 
-    // ¿cuanto ya hay? y restar con 1.000.000 registrar 
-    // pago si el valor es menor o igual a lo que falta
-    // si es mayor, se devuelve error 
-    return ''
+  let pays = await Pago.findAll({
+    attributes: [
+      "documentoIdentificacionArrendatario",
+      "codigoInmueble",
+      "valorPagado",
+      "fechaPago",
+    ],
+    where: {
+      documentoIdentificacionArrendatario:
+        pago.documentoIdentificacionArrendatario,
+      codigoInmueble: pago.codigoInmueble,
+    },
+  }).then( (payment) =>{
+      if (payment.length > 0) {
+        let pay = JSON.parse(JSON.stringify(payment))
+          .map((payi: any) => {
+            return Number(payi.valorPagado);
+          })
+          .reduce(
+            (accumulator: number, currentValue: number) =>
+              accumulator + currentValue
+          );
+        console.log("acumulado ", pay);
+        return pay;
+      }
+      return 0;
+    })
+    .catch(() =>  0);
+
+  console.log('pay' ,pays)
+
+  if (pays !== 0) {
+    if (pays < 1000000 && (pays + pago.valorPagado) < 1000000) {
+      mesg = await Pago.create(pago)
+        .then(() => {
+          return `gracias por tu abono, sin embargo recuerda que te hace falta pagar ${
+            1000000 - (pays + pago.valorPagado)
+          }`;
+        })
+        .catch(() => {
+          return "Hubo un error registrando el pago.";
+        });      
+    }
+    if (pays < 1000000 && (pays + pago.valorPagado) === 1000000) {
+      mesg = await Pago.create(pago)
+        .then(() => {
+          return "gracias por pagar todo tu arriendo";
+        })
+        .catch(() => {
+        return "Hubo un error registrando el pago.";
+        });
+    }
+    if (pays < 1000000 && (pays + pago.valorPagado) > 1000000) {
+      mesg = `El valor del arriendo es $1.000.000. No se ha registrado pago porque hay un abono de ${pays}`;
+    }
+    if ( (pays + pago.valorPagado) > 1000000) {
+      mesg = `El valor del arriendo es $1.000.000. No se ha registrado pago porque hay un pago de ${pays}`;
+    }
+  } else {
+    console.log('pago -',pago.valorPagado);
+    if (pago.valorPagado === 1000000) {
+      mesg = await Pago.create(pago)
+        .then(() => {
+          return "gracias por pagar todo tu arriendo";
+        })
+        .catch(() => {
+          return "Hubo un error registrando el pago.";
+        });
+    }
+    if (pago.valorPagado < 1000000) {
+      console.log('entra aqui')
+      mesg = await Pago.create(pago)
+        .then(() => {
+          return `gracias por tu abono, sin embargo recuerda que te hace falta pagar ${
+            1000000 - pago.valorPagado
+          }`;          
+        })
+        .catch(() => {
+          return "Hubo un error registrando el pago.";
+        });
+    }
+  }
+  return mesg;
 }

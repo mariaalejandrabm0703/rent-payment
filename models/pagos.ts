@@ -1,8 +1,17 @@
 import moment from "moment";
-import { DataTypes, QueryTypes, Sequelize } from "sequelize";
+import { DataTypes, Model, Optional, QueryTypes, Sequelize } from "sequelize";
 import db from "../database/connection";
 
-const Pago = db.define("Pago", {
+export interface IPay {
+  documentoIdentificacionArrendatario: number;
+  codigoInmueble: string;
+  valorPagado: number;
+  fechaPago: Date;
+}
+export interface PayInstance
+  extends Model<IPay>,IPay{}
+
+  export const Pago = db.define<PayInstance>("Pago", {
   documentoIdentificacionArrendatario: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -28,7 +37,7 @@ const Pago = db.define("Pago", {
     },
   },
   valorPagado: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
       notNull: {
@@ -67,4 +76,4 @@ Pago.sync().then(() => {
   console.log('table Pago update');
 });
 
-export default Pago;
+

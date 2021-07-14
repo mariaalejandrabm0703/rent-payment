@@ -35,18 +35,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postPagos = exports.getPagos = void 0;
-var pagos_1 = __importDefault(require("../models/pagos"));
+var pagos_1 = require("../models/pagos");
 var pagos_2 = require("../services/pagos");
 var getPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var pagos;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, pagos_1.default.findAll({
+            case 0: return [4 /*yield*/, pagos_1.Pago.findAll({
                     attributes: [
                         "documentoIdentificacionArrendatario",
                         "codigoInmueble",
@@ -63,35 +60,37 @@ var getPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
 }); };
 exports.getPagos = getPagos;
 var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var body, fechaPago, pago, resp;
+    var body, fechaPago, pago, resp, error_1;
     return __generator(this, function (_a) {
-        try {
-            body = req.body;
-            fechaPago = pagos_2.validateFormatDate(body.fechaPago);
-            if (!fechaPago) {
-                return [2 /*return*/, res.status(400).json({
-                        msg: "Formato de fecha incorrecto.",
-                    })];
-            }
-            pago = {
-                documentoIdentificacionArrendatario: req.body.documentoIdentificacionArrendatario,
-                codigoInmueble: body.codigoInmueble,
-                valorPagado: body.valorPagado,
-                fechaPago: fechaPago,
-            };
-            resp = pagos_2.postPago(pago);
-            pagos_1.default.create(pago).then(function (pago) {
-                res.json({ respuesta: pago });
-            }).catch(function (err) { return res.status(500).json({
-                msg: err.errors[0].message,
-            }); });
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                body = req.body;
+                fechaPago = pagos_2.validateFormatDate(body.fechaPago);
+                if (!fechaPago) {
+                    return [2 /*return*/, res.status(400).json({
+                            msg: "Formato de fecha incorrecto.",
+                        })];
+                }
+                pago = {
+                    documentoIdentificacionArrendatario: req.body.documentoIdentificacionArrendatario,
+                    codigoInmueble: body.codigoInmueble,
+                    valorPagado: body.valorPagado,
+                    fechaPago: fechaPago,
+                };
+                return [4 /*yield*/, pagos_2.createPago(pago)];
+            case 1:
+                resp = _a.sent();
+                res.status(200).json(resp);
+                return [3 /*break*/, 3];
+            case 2:
+                error_1 = _a.sent();
+                res.status(500).json({
+                    msg: error_1.errors[0].message,
+                });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
-        catch (error) {
-            res.status(500).json({
-                msg: error.errors[0].message,
-            });
-        }
-        return [2 /*return*/];
     });
 }); };
 exports.postPagos = postPagos;

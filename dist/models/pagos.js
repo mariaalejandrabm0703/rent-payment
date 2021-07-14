@@ -3,10 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Pago = void 0;
 var moment_1 = __importDefault(require("moment"));
 var sequelize_1 = require("sequelize");
 var connection_1 = __importDefault(require("../database/connection"));
-var Pago = connection_1.default.define("Pago", {
+exports.Pago = connection_1.default.define("Pago", {
     documentoIdentificacionArrendatario: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
@@ -32,7 +33,7 @@ var Pago = connection_1.default.define("Pago", {
         },
     },
     valorPagado: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         validate: {
             notNull: {
@@ -67,8 +68,7 @@ var Pago = connection_1.default.define("Pago", {
         }
     },
 });
-Pago.sync().then(function () {
+exports.Pago.sync().then(function () {
     console.log('table Pago update');
 });
-exports.default = Pago;
 //# sourceMappingURL=pagos.js.map
