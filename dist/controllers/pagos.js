@@ -72,6 +72,11 @@ var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, f
                             msg: "Formato de fecha incorrecto.",
                         })];
                 }
+                if (fechaPago.getDate() % 2 === 0) {
+                    return [2 /*return*/, res.status(400).json({
+                            msg: "Lo siento pero no se puede recibir el pago por decreto de administración.",
+                        })];
+                }
                 pago = {
                     documentoIdentificacionArrendatario: req.body.documentoIdentificacionArrendatario,
                     codigoInmueble: body.codigoInmueble,
@@ -81,7 +86,7 @@ var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, f
                 return [4 /*yield*/, pagos_2.createPago(pago)];
             case 1:
                 resp = _a.sent();
-                res.status(200).json(resp);
+                res.status(200).json({ respuesta: resp });
                 return [3 /*break*/, 3];
             case 2:
                 error_1 = _a.sent();

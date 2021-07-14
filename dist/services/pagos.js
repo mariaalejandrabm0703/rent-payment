@@ -78,7 +78,8 @@ function createPago(pago) {
                                 documentoIdentificacionArrendatario: pago.documentoIdentificacionArrendatario,
                                 codigoInmueble: pago.codigoInmueble,
                             },
-                        }).then(function (payment) {
+                        })
+                            .then(function (payment) {
                             if (payment.length > 0) {
                                 var pay = JSON.parse(JSON.stringify(payment))
                                     .map(function (payi) {
@@ -87,7 +88,6 @@ function createPago(pago) {
                                     .reduce(function (accumulator, currentValue) {
                                     return accumulator + currentValue;
                                 });
-                                console.log("acumulado ", pay);
                                 return pay;
                             }
                             return 0;
@@ -95,9 +95,8 @@ function createPago(pago) {
                             .catch(function () { return 0; })];
                 case 1:
                     pays = _a.sent();
-                    console.log('pay', pays);
                     if (!(pays !== 0)) return [3 /*break*/, 6];
-                    if (!(pays < 1000000 && (pays + pago.valorPagado) < 1000000)) return [3 /*break*/, 3];
+                    if (!(pays < 1000000 && pays + pago.valorPagado < 1000000)) return [3 /*break*/, 3];
                     return [4 /*yield*/, pagos_1.Pago.create(pago)
                             .then(function () {
                             return "gracias por tu abono, sin embargo recuerda que te hace falta pagar " + (1000000 - (pays + pago.valorPagado));
@@ -109,7 +108,7 @@ function createPago(pago) {
                     mesg = _a.sent();
                     _a.label = 3;
                 case 3:
-                    if (!(pays < 1000000 && (pays + pago.valorPagado) === 1000000)) return [3 /*break*/, 5];
+                    if (!(pays < 1000000 && pays + pago.valorPagado === 1000000)) return [3 /*break*/, 5];
                     return [4 /*yield*/, pagos_1.Pago.create(pago)
                             .then(function () {
                             return "gracias por pagar todo tu arriendo";
@@ -121,15 +120,14 @@ function createPago(pago) {
                     mesg = _a.sent();
                     _a.label = 5;
                 case 5:
-                    if (pays < 1000000 && (pays + pago.valorPagado) > 1000000) {
+                    if (pays < 1000000 && pays + pago.valorPagado > 1000000) {
                         mesg = "El valor del arriendo es $1.000.000. No se ha registrado pago porque hay un abono de " + pays;
                     }
-                    if ((pays + pago.valorPagado) > 1000000) {
+                    if (pays + pago.valorPagado > 1000000) {
                         mesg = "El valor del arriendo es $1.000.000. No se ha registrado pago porque hay un pago de " + pays;
                     }
                     return [3 /*break*/, 10];
                 case 6:
-                    console.log('pago -', pago.valorPagado);
                     if (!(pago.valorPagado === 1000000)) return [3 /*break*/, 8];
                     return [4 /*yield*/, pagos_1.Pago.create(pago)
                             .then(function () {
@@ -143,7 +141,6 @@ function createPago(pago) {
                     _a.label = 8;
                 case 8:
                     if (!(pago.valorPagado < 1000000)) return [3 /*break*/, 10];
-                    console.log('entra aqui');
                     return [4 /*yield*/, pagos_1.Pago.create(pago)
                             .then(function () {
                             return "gracias por tu abono, sin embargo recuerda que te hace falta pagar " + (1000000 - pago.valorPagado);

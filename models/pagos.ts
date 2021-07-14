@@ -8,10 +8,9 @@ export interface IPay {
   valorPagado: number;
   fechaPago: Date;
 }
-export interface PayInstance
-  extends Model<IPay>,IPay{}
+export interface PayInstance extends Model<IPay>, IPay {}
 
-  export const Pago = db.define<PayInstance>("Pago", {
+export const Pago = db.define<PayInstance>("Pago", {
   documentoIdentificacionArrendatario: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -20,8 +19,8 @@ export interface PayInstance
         msg: "El campo [documentoIdentificacionArrendatario] no puede ser nulo.",
       },
       isNumeric: {
-        msg:'El campo [documentoIdentificacionArrendatario] debe ser un número.'
-      }
+        msg: "El campo [documentoIdentificacionArrendatario] debe ser un número.",
+      },
     },
   },
   codigoInmueble: {
@@ -30,10 +29,10 @@ export interface PayInstance
     validate: {
       notNull: {
         msg: "El campo [codigoInmueble] no puede ser nulo.",
-      }, 
-      isAlphanumeric:{
-        msg:'El campo [codigoInmueble] debe ser un número.'
-      }
+      },
+      isAlphanumeric: {
+        msg: "El campo [codigoInmueble] debe ser un número.",
+      },
     },
   },
   valorPagado: {
@@ -44,12 +43,12 @@ export interface PayInstance
         msg: "El campo [valorPagado] no puede ser nulo.",
       },
       min: {
-        args:[1],
-        msg:'El campo [valorPagado] debe tener mínimo valor 1.'
+        args: [1],
+        msg: "El campo [valorPagado] debe tener mínimo valor 1.",
       },
-      max:{
-        args:[1000000],
-        msg:'El campo [valorPagado] debe tener máximo valor 1.000.000.'
+      max: {
+        args: [1000000],
+        msg: "El campo [valorPagado] debe tener máximo valor 1.000.000.",
       },
     },
   },
@@ -61,19 +60,17 @@ export interface PayInstance
         msg: "El campo [fechaPago] no puede ser nulo.",
       },
     },
-    get: function() {
-        let time = this.getDataValue('fechaPago')
-        if (moment(time, moment.ISO_8601, true).isValid()) {
-            return moment(this.getDataValue('fechaPago')).format('DD/MM/YYYY')
-        } else {
-            return time
-        }
-    }
+    get: function () {
+      let time = this.getDataValue("fechaPago");
+      if (moment(time, moment.ISO_8601, true).isValid()) {
+        return moment(this.getDataValue("fechaPago")).format("DD/MM/YYYY");
+      } else {
+        return time;
+      }
+    },
   },
 });
 
 Pago.sync().then(() => {
-  console.log('table Pago update');
+  console.log("table Pago update");
 });
-
-

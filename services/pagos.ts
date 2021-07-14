@@ -40,7 +40,8 @@ export async function createPago(pago: IPay) {
         pago.documentoIdentificacionArrendatario,
       codigoInmueble: pago.codigoInmueble,
     },
-  }).then( (payment) =>{
+  })
+    .then((payment) => {
       if (payment.length > 0) {
         let pay = JSON.parse(JSON.stringify(payment))
           .map((payi: any) => {
@@ -50,17 +51,14 @@ export async function createPago(pago: IPay) {
             (accumulator: number, currentValue: number) =>
               accumulator + currentValue
           );
-        console.log("acumulado ", pay);
         return pay;
       }
       return 0;
     })
-    .catch(() =>  0);
-
-  console.log('pay' ,pays)
+    .catch(() => 0);
 
   if (pays !== 0) {
-    if (pays < 1000000 && (pays + pago.valorPagado) < 1000000) {
+    if (pays < 1000000 && pays + pago.valorPagado < 1000000) {
       mesg = await Pago.create(pago)
         .then(() => {
           return `gracias por tu abono, sin embargo recuerda que te hace falta pagar ${
@@ -69,25 +67,24 @@ export async function createPago(pago: IPay) {
         })
         .catch(() => {
           return "Hubo un error registrando el pago.";
-        });      
+        });
     }
-    if (pays < 1000000 && (pays + pago.valorPagado) === 1000000) {
+    if (pays < 1000000 && pays + pago.valorPagado === 1000000) {
       mesg = await Pago.create(pago)
         .then(() => {
           return "gracias por pagar todo tu arriendo";
         })
         .catch(() => {
-        return "Hubo un error registrando el pago.";
+          return "Hubo un error registrando el pago.";
         });
     }
-    if (pays < 1000000 && (pays + pago.valorPagado) > 1000000) {
+    if (pays < 1000000 && pays + pago.valorPagado > 1000000) {
       mesg = `El valor del arriendo es $1.000.000. No se ha registrado pago porque hay un abono de ${pays}`;
     }
-    if ( (pays + pago.valorPagado) > 1000000) {
+    if (pays + pago.valorPagado > 1000000) {
       mesg = `El valor del arriendo es $1.000.000. No se ha registrado pago porque hay un pago de ${pays}`;
     }
   } else {
-    console.log('pago -',pago.valorPagado);
     if (pago.valorPagado === 1000000) {
       mesg = await Pago.create(pago)
         .then(() => {
@@ -98,12 +95,11 @@ export async function createPago(pago: IPay) {
         });
     }
     if (pago.valorPagado < 1000000) {
-      console.log('entra aqui')
       mesg = await Pago.create(pago)
         .then(() => {
           return `gracias por tu abono, sin embargo recuerda que te hace falta pagar ${
             1000000 - pago.valorPagado
-          }`;          
+          }`;
         })
         .catch(() => {
           return "Hubo un error registrando el pago.";
