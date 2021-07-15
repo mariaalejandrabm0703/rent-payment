@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createPago = exports.validateFormatDate = void 0;
 var moment_1 = __importDefault(require("moment"));
 var pagos_1 = require("../models/pagos");
+var Op = require("sequelize").Op;
 function validateFormatDate(fechaPago) {
     var newDate;
     var dateFormat = "DD-MM-YYYY";
@@ -62,11 +63,16 @@ function validateFormatDate(fechaPago) {
 exports.validateFormatDate = validateFormatDate;
 function createPago(pago) {
     return __awaiter(this, void 0, void 0, function () {
-        var mesg, pays;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var mesg, startedDate, endDate, pays;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     mesg = "";
+                    startedDate = new Date(pago.fechaPago.getUTCFullYear() + "/" + (pago.fechaPago.getMonth() + 1) + "/01");
+                    endDate = new Date(pago.fechaPago.getUTCFullYear() + "/" + (pago.fechaPago.getMonth() + 1) + "/31");
+                    console.log(startedDate);
+                    console.log(endDate);
                     return [4 /*yield*/, pagos_1.Pago.findAll({
                             attributes: [
                                 "documentoIdentificacionArrendatario",
@@ -77,6 +83,7 @@ function createPago(pago) {
                             where: {
                                 documentoIdentificacionArrendatario: pago.documentoIdentificacionArrendatario,
                                 codigoInmueble: pago.codigoInmueble,
+                                fechaPago: (_a = {}, _a[Op.between] = [startedDate, endDate], _a)
                             },
                         })
                             .then(function (payment) {
@@ -94,19 +101,19 @@ function createPago(pago) {
                         })
                             .catch(function () { return 0; })];
                 case 1:
-                    pays = _a.sent();
+                    pays = _b.sent();
                     if (!(pays !== 0)) return [3 /*break*/, 6];
                     if (!(pays < 1000000 && pays + pago.valorPagado < 1000000)) return [3 /*break*/, 3];
                     return [4 /*yield*/, pagos_1.Pago.create(pago)
                             .then(function () {
-                            return "gracias por tu abono, sin embargo recuerda que te hace falta pagar " + (1000000 - (pays + pago.valorPagado));
+                            return "gracias por tu abono, sin embargo recuerda que te hace falta pagar " + (1000000 - (pays + pago.valorPagado)) + " mes " + (pago.fechaPago.getMonth() + 1);
                         })
                             .catch(function () {
                             return "Hubo un error registrando el pago.";
                         })];
                 case 2:
-                    mesg = _a.sent();
-                    _a.label = 3;
+                    mesg = _b.sent();
+                    _b.label = 3;
                 case 3:
                     if (!(pays < 1000000 && pays + pago.valorPagado === 1000000)) return [3 /*break*/, 5];
                     return [4 /*yield*/, pagos_1.Pago.create(pago)
@@ -117,8 +124,8 @@ function createPago(pago) {
                             return "Hubo un error registrando el pago.";
                         })];
                 case 4:
-                    mesg = _a.sent();
-                    _a.label = 5;
+                    mesg = _b.sent();
+                    _b.label = 5;
                 case 5:
                     if (pays < 1000000 && pays + pago.valorPagado > 1000000) {
                         mesg = "El valor del arriendo es $1.000.000. No se ha registrado pago porque hay un abono de " + pays;
@@ -137,20 +144,20 @@ function createPago(pago) {
                             return "Hubo un error registrando el pago.";
                         })];
                 case 7:
-                    mesg = _a.sent();
-                    _a.label = 8;
+                    mesg = _b.sent();
+                    _b.label = 8;
                 case 8:
                     if (!(pago.valorPagado < 1000000)) return [3 /*break*/, 10];
                     return [4 /*yield*/, pagos_1.Pago.create(pago)
                             .then(function () {
-                            return "gracias por tu abono, sin embargo recuerda que te hace falta pagar " + (1000000 - pago.valorPagado);
+                            return "gracias por tu abono, sin embargo recuerda que te hace falta pagar " + (1000000 - pago.valorPagado) + " mes " + (pago.fechaPago.getMonth() + 1);
                         })
                             .catch(function () {
                             return "Hubo un error registrando el pago.";
                         })];
                 case 9:
-                    mesg = _a.sent();
-                    _a.label = 10;
+                    mesg = _b.sent();
+                    _b.label = 10;
                 case 10: return [2 /*return*/, mesg];
             }
         });

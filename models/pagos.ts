@@ -31,7 +31,7 @@ export const Pago = db.define<PayInstance>("Pago", {
         msg: "El campo [codigoInmueble] no puede ser nulo.",
       },
       isAlphanumeric: {
-        msg: "El campo [codigoInmueble] debe ser un número.",
+        msg: "El campo [codigoInmueble] debe ser alfanumerico.",
       },
     },
   },

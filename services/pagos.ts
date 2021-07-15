@@ -1,5 +1,6 @@
 import moment from "moment";
 import { Pago, IPay } from "../models/pagos";
+const { Op } = require("sequelize");
 
 export function validateFormatDate(fechaPago: string) {
   let newDate;
@@ -28,6 +29,16 @@ export function validateFormatDate(fechaPago: string) {
 export async function createPago(pago: IPay) {
   let mesg: string = "";
 
+  const startedDate = new Date(
+    `${pago.fechaPago.getUTCFullYear()}/${pago.fechaPago.getMonth() + 1}/01`
+  );
+  const endDate = new Date(
+    `${pago.fechaPago.getUTCFullYear()}/${pago.fechaPago.getMonth() + 1}/31`
+  );
+
+  console.log(startedDate);
+  console.log(endDate);
+
   let pays = await Pago.findAll({
     attributes: [
       "documentoIdentificacionArrendatario",
@@ -39,11 +50,12 @@ export async function createPago(pago: IPay) {
       documentoIdentificacionArrendatario:
         pago.documentoIdentificacionArrendatario,
       codigoInmueble: pago.codigoInmueble,
+      fechaPago : {[Op.between] : [startedDate , endDate ]}
     },
   })
     .then((payment) => {
       if (payment.length > 0) {
-        let pay = JSON.parse(JSON.stringify(payment))
+        let pay = JSON.parse(JSON.stringify(payment))        
           .map((payi: any) => {
             return Number(payi.valorPagado);
           })
@@ -63,7 +75,7 @@ export async function createPago(pago: IPay) {
         .then(() => {
           return `gracias por tu abono, sin embargo recuerda que te hace falta pagar ${
             1000000 - (pays + pago.valorPagado)
-          }`;
+          } mes ${pago.fechaPago.getMonth()+1}`;
         })
         .catch(() => {
           return "Hubo un error registrando el pago.";
@@ -99,7 +111,7 @@ export async function createPago(pago: IPay) {
         .then(() => {
           return `gracias por tu abono, sin embargo recuerda que te hace falta pagar ${
             1000000 - pago.valorPagado
-          }`;
+          } mes ${pago.fechaPago.getMonth()+1}`;
         })
         .catch(() => {
           return "Hubo un error registrando el pago.";

@@ -28,7 +28,7 @@ exports.Pago = connection_1.default.define("Pago", {
                 msg: "El campo [codigoInmueble] no puede ser nulo.",
             },
             isAlphanumeric: {
-                msg: "El campo [codigoInmueble] debe ser un número.",
+                msg: "El campo [codigoInmueble] debe ser alfanumerico.",
             },
         },
     },
