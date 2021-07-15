@@ -28,7 +28,7 @@ class Server {
   }
   middlewares() {
     this.app.use(cors()); // config default del cors
-    this.app.use(express.json()); // me parse el body en json
+    this.app.use(express.json()); // parse el body en json
     this.app.use(express.static("public")); //carpeta publica
   }
   routes() {

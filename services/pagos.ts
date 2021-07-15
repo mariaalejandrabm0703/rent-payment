@@ -2,6 +2,11 @@ import moment from "moment";
 import { Pago, IPay } from "../models/pagos";
 const { Op } = require("sequelize");
 
+/**
+ * 
+ * @param fechaPago 
+ * @returns 
+ */
 export function validateFormatDate(fechaPago: string) {
   let newDate;
   let dateFormat = "DD-MM-YYYY";
@@ -26,6 +31,11 @@ export function validateFormatDate(fechaPago: string) {
   return false;
 }
 
+/**
+ * 
+ * @param pago 
+ * @returns 
+ */
 export async function createPago(pago: IPay) {
   let mesg: string = "";
 
@@ -35,9 +45,6 @@ export async function createPago(pago: IPay) {
   const endDate = new Date(
     `${pago.fechaPago.getUTCFullYear()}/${pago.fechaPago.getMonth() + 1}/31`
   );
-
-  console.log(startedDate);
-  console.log(endDate);
 
   let pays = await Pago.findAll({
     attributes: [
