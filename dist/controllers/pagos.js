@@ -39,6 +39,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postPagos = exports.getPagos = void 0;
 var pagos_1 = require("../models/pagos");
 var pagos_2 = require("../services/pagos");
+/**
+ *
+ * @param req
+ * @param res
+ */
 var getPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var pagos;
     return __generator(this, function (_a) {
@@ -59,6 +64,12 @@ var getPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getPagos = getPagos;
+/**
+ *
+ * @param req
+ * @param res
+ * @returns
+ */
 var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var body, fechaPago, pago, resp, error_1;
     return __generator(this, function (_a) {
@@ -72,6 +83,7 @@ var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, f
                             msg: "Formato de fecha incorrecto.",
                         })];
                 }
+                // Valida fecha impar
                 if (fechaPago.getDate() % 2 === 0) {
                     return [2 /*return*/, res.status(400).json({
                             msg: "Lo siento pero no se puede recibir el pago por decreto de administración.",
@@ -90,10 +102,9 @@ var postPagos = function (req, res) { return __awaiter(void 0, void 0, void 0, f
                 return [3 /*break*/, 3];
             case 2:
                 error_1 = _a.sent();
-                res.status(500).json({
-                    msg: error_1.errors[0].message,
-                });
-                return [3 /*break*/, 3];
+                return [2 /*return*/, res.status(500).json({
+                        msg: error_1,
+                    })];
             case 3: return [2 /*return*/];
         }
     });

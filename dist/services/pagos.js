@@ -43,6 +43,11 @@ exports.createPago = exports.validateFormatDate = void 0;
 var moment_1 = __importDefault(require("moment"));
 var pagos_1 = require("../models/pagos");
 var Op = require("sequelize").Op;
+/**
+ *
+ * @param fechaPago
+ * @returns
+ */
 function validateFormatDate(fechaPago) {
     var newDate;
     var dateFormat = "DD-MM-YYYY";
@@ -61,6 +66,11 @@ function validateFormatDate(fechaPago) {
     return false;
 }
 exports.validateFormatDate = validateFormatDate;
+/**
+ *
+ * @param pago
+ * @returns
+ */
 function createPago(pago) {
     return __awaiter(this, void 0, void 0, function () {
         var mesg, startedDate, endDate, pays;
@@ -71,8 +81,6 @@ function createPago(pago) {
                     mesg = "";
                     startedDate = new Date(pago.fechaPago.getUTCFullYear() + "/" + (pago.fechaPago.getMonth() + 1) + "/01");
                     endDate = new Date(pago.fechaPago.getUTCFullYear() + "/" + (pago.fechaPago.getMonth() + 1) + "/31");
-                    console.log(startedDate);
-                    console.log(endDate);
                     return [4 /*yield*/, pagos_1.Pago.findAll({
                             attributes: [
                                 "documentoIdentificacionArrendatario",

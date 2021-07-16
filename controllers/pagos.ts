@@ -58,8 +58,8 @@ export const postPagos = async (req: Request, res: Response) => {
 
     res.status(200).json({ respuesta: resp });
   } catch (error) {
-    res.status(500).json({
-      msg: error.errors[0].message,
+    return res.status(500).json({
+      msg: error,
     });
   }
 };

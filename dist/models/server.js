@@ -76,7 +76,7 @@ var Server = /** @class */ (function () {
     };
     Server.prototype.middlewares = function () {
         this.app.use(cors_1.default()); // config default del cors
-        this.app.use(express_1.default.json()); // me parse el body en json
+        this.app.use(express_1.default.json()); // parse el body en json
         this.app.use(express_1.default.static("public")); //carpeta publica
     };
     Server.prototype.routes = function () {
