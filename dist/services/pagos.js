@@ -44,9 +44,9 @@ var moment_1 = __importDefault(require("moment"));
 var pagos_1 = require("../models/pagos");
 var Op = require("sequelize").Op;
 /**
- *
- * @param fechaPago
- * @returns
+ * Valida el formato de fecha
+ * @param fechaPago fecha recibida desde la petición
+ * @returns false si es invalida ó la fecha tipo Date si es correcta
  */
 function validateFormatDate(fechaPago) {
     var newDate;
@@ -67,9 +67,9 @@ function validateFormatDate(fechaPago) {
 }
 exports.validateFormatDate = validateFormatDate;
 /**
- *
- * @param pago
- * @returns
+ * Registra un pago de arriendo según la fecha y el arrendatario.
+ * @param pago información de la petición
+ * @returns mensaje de respuesta
  */
 function createPago(pago) {
     return __awaiter(this, void 0, void 0, function () {

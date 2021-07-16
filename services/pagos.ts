@@ -3,9 +3,9 @@ import { Pago, IPay } from "../models/pagos";
 const { Op } = require("sequelize");
 
 /**
- * 
- * @param fechaPago 
- * @returns 
+ * Valida el formato de fecha
+ * @param fechaPago fecha recibida desde la petición 
+ * @returns false si es invalida ó la fecha tipo Date si es correcta
  */
 export function validateFormatDate(fechaPago: string) {
   let newDate;
@@ -32,9 +32,9 @@ export function validateFormatDate(fechaPago: string) {
 }
 
 /**
- * 
- * @param pago 
- * @returns 
+ * Registra un pago de arriendo según la fecha y el arrendatario.
+ * @param pago información de la petición
+ * @returns mensaje de respuesta
  */
 export async function createPago(pago: IPay) {
   let mesg: string = "";
